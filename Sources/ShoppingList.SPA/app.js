@@ -4,8 +4,8 @@
     angular.module("ShoppingListCheckOffApp", [])
         .controller("ShoppingListController", shoppingListController)
         .service("ShoppingListCheckOffService", shoppingListCheckOffService)
-        .constant('ApiBasePath', "http://localhost:5000/api/shoppinglist");
-    //.constant('ApiBasePath', "http://shoppinglistapi-dev.eu-central-1.elasticbeanstalk.com/api/shoppinglist");
+        //.constant('ApiBasePath', "http://localhost:5000/api/shoppinglist");
+        .constant('ApiBasePath', "http://shoppinglistapi-dev.eu-central-1.elasticbeanstalk.com/api/shoppinglist");
 
 
     shoppingListController.$inject = ['$q', 'ShoppingListCheckOffService'];
@@ -17,7 +17,7 @@
 
         list.addShoppingItem = function (itemName, itemQuantity) {
             shoppingListService.addItem(itemName, itemQuantity)
-                .then(function() {
+                .then(function () {
                     list.updateItemsList();
                 })
                 .catch(function (error) {
