@@ -1,0 +1,4 @@
+bin
+obj
+/Sources/.vs
+*.user
