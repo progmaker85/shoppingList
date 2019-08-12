@@ -64,7 +64,7 @@ namespace ShoppingList.API.Repositories
                 {
                     result.AddRange(dbConnection.Query<ShoppingItem>(MssqlQueriesResource.SelectBoughtItems, new
                     {
-                        checkOffDate = DateTime.Now.Date.AddDays(-1)
+                        checkOffDate = DateTime.Now.Date
                     }).ToList());
                 }
             }
