@@ -34,11 +34,11 @@
 
         <div class="row" ng-controller="ShoppingListController as list">
             <div class="form-group">
-                <input ng-model="itemName" type="text" placeholder="Item Name" class="form-control">
-                <input ng-model="itemQuantity" type="number" placeholder="Item Quantity" class="form-control">
+                <input ng-model="list.itemName" type="text" placeholder="Item Name" class="form-control">
+                <input ng-model="list.itemQuantity" type="number" placeholder="Item Quantity" class="form-control">
             </div>
             <div class="form-group">
-                <button ng-click="list.addShoppingItem(itemName, itemQuantity)" class="btn btn-primary">Add Shopping Item</button>
+                <button ng-click="list.addShoppingItem(list.itemName, list.itemQuantity)" class="btn btn-primary">Add Shopping Item</button>
             </div>
             <!-- To Buy List -->
             <div class="col-md-6">

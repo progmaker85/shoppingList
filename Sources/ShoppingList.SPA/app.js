@@ -5,24 +5,34 @@
         .controller("ShoppingListController", shoppingListController)
         .service("ShoppingListCheckOffService", shoppingListCheckOffService)
         //.constant('ApiBasePath', "http://localhost:5000/api/shoppinglist");
-        .constant('ApiBasePath', "http://shoppinglistapi-dev.eu-central-1.elasticbeanstalk.com/api/shoppinglist");
+        .constant('ApiBasePath', "https://shoppinglistapi.progmaker85.name/api/shoppinglist");
 
 
-    shoppingListController.$inject = ['$q', 'ShoppingListCheckOffService'];
-    function shoppingListController($q, shoppingListService) {
+    shoppingListController.$inject = ['$q', 'ShoppingListCheckOffService', '$interval'];
+    function shoppingListController($q, shoppingListService, $interval) {
         var list = this;
 
+        list.itemName = null;
+        list.itemQuantity = null;
         list.shoppingItems = [];
         list.boughtItems = [];
+        var updateLocked = false;
+
+        $interval(function () {
+            if (updateLocked) return;
+            list.updateItemsList();
+        }, 30000);
 
         list.addShoppingItem = function (itemName, itemQuantity) {
-            shoppingListService.addItem(itemName, itemQuantity)
-                .then(function () {
-                    list.updateItemsList();
-                })
-                .catch(function (error) {
-                    console.log("Something went terribly wrong." + error);
-                });
+            updateLocked = true;
+            list.shoppingItems.push({ itemName: itemName, quantity: itemQuantity });
+            shoppingListService.addItem(itemName, itemQuantity).finally(function () {
+                updateLocked = false;
+            }).catch(function (error) {
+                console.log("Something went terribly wrong." + error);
+            });
+            list.itemName = null;
+            list.itemQuantity = null;
         };
 
         list.updateItemsList = function () {
@@ -38,11 +48,17 @@
         };
 
         list.checkOutItem = function (itemIndex) {
-            shoppingListService.checkOutItem(list.shoppingItems[itemIndex].id).then(function () {
-                list.updateItemsList();
-            }).catch(function (error) {
-                console.log("Something went terribly wrong." + error);
-            });
+            updateLocked = true;
+            shoppingListService.checkOutItem(list.shoppingItems[itemIndex].id)
+                .finally(function () {
+                    updateLocked = false
+                })
+                .catch(function (error) {
+                    console.log("Something went terribly wrong." + error);
+                });
+
+            var removedItem = list.shoppingItems.splice(itemIndex, 1);
+            list.boughtItems.push(removedItem[0]);
         }
 
         list.updateItemsList();
